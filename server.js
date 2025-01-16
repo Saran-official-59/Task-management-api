@@ -1,9 +1,12 @@
-require('dotenv').config();
-const express = require('express');
-const { Sequelize, DataTypes } = require('sequelize');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const cors = require('cors');
+import 'dotenv/config';
+import express from 'express';
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import cors from 'cors';
+import { User } from './models/user.js';
+import { Task } from './models/task.js';
+import { auth } from './middleware/auth.js';
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -12,139 +15,27 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// Database Configuration
-const sequelize = new Sequelize({
-  host: process.env.DB_HOST,
-  username: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  dialect: 'mysql',
-  dialectOptions: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false
-    }
-  },
-  logging: false
-});
-
-// Add this for debugging
-console.log('Database Config:', {
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  database: process.env.DB_NAME,
-  // Don't log the password
-});
-
-// Define User Model
-const User = sequelize.define('users', {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  username: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true
-  },
-  password: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  created_at: {
-    type: DataTypes.DATE,
-    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
-  }
-}, {
-  timestamps: false,
-  tableName: 'users',
-  hooks: {
-    beforeCreate: async (user) => {
-      if (user.password) {
-        user.password = await bcrypt.hash(user.password, 8);
-      }
-    }
-  }
-});
-
-// Define Task Model
-const Task = sequelize.define('tasks', {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  user_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: 'users',
-      key: 'id'
-    }
-  },
-  title: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  description: {
-    type: DataTypes.TEXT,
-    allowNull: true
-  },
-  status: {
-    type: DataTypes.ENUM('pending', 'in-progress', 'completed'),
-    defaultValue: 'pending'
-  },
-  created_at: {
-    type: DataTypes.DATE,
-    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
-  },
-  updated_at: {
-    type: DataTypes.DATE,
-    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
-    onUpdate: Sequelize.literal('CURRENT_TIMESTAMP')
-  }
-}, {
-  timestamps: false,
-  tableName: 'tasks'
-});
-
-// Authentication Middleware
-const auth = async (req, res, next) => {
-  try {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
-    if (!token) throw new Error();
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findByPk(decoded.userId);
-    
-    if (!user) throw new Error();
-
-    const userData = user.toJSON();
-    delete userData.password;
-    
-    req.user = userData;
-    next();
-  } catch (error) {
-    res.status(401).json({ error: 'Please authenticate' });
-  }
-};
+// MongoDB Connection
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
 // Auth Routes
 app.post('/api/auth/register', async (req, res) => {
   try {
-    const user = await User.create({
+    const user = new User({
       username: req.body.username,
       password: req.body.password
     });
+    await user.save();
 
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET);
-    const userData = user.toJSON();
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
+    const userData = user.toObject();
     delete userData.password;
     
     res.status(201).json({ user: userData, token });
   } catch (error) {
-    if (error.name === 'SequelizeUniqueConstraintError') {
+    if (error.code === 11000) {
       return res.status(400).json({ error: 'Username already exists' });
     }
     res.status(400).json({ error: error.message });
@@ -154,14 +45,14 @@ app.post('/api/auth/register', async (req, res) => {
 app.post('/api/auth/login', async (req, res) => {
   try {
     const { username, password } = req.body;
-    const user = await User.findOne({ where: { username } });
+    const user = await User.findOne({ username });
     
     if (!user || !(await bcrypt.compare(password, user.password))) {
       throw new Error('Invalid login credentials');
     }
 
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET);
-    const userData = user.toJSON();
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
+    const userData = user.toObject();
     delete userData.password;
     
     res.json({ user: userData, token });
@@ -173,10 +64,11 @@ app.post('/api/auth/login', async (req, res) => {
 // Task Routes
 app.post('/api/tasks', auth, async (req, res) => {
   try {
-    const task = await Task.create({
+    const task = new Task({
       ...req.body,
-      user_id: req.user.id
+      user: req.user._id
     });
+    await task.save();
     res.status(201).json(task);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -185,9 +77,7 @@ app.post('/api/tasks', auth, async (req, res) => {
 
 app.get('/api/tasks', auth, async (req, res) => {
   try {
-    const tasks = await Task.findAll({
-      where: { user_id: req.user.id }
-    });
+    const tasks = await Task.find({ user: req.user._id });
     res.json(tasks);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -204,25 +94,17 @@ app.patch('/api/tasks/:id', auth, async (req, res) => {
   }
 
   try {
-    const [updatedRows] = await Task.update(req.body, {
-      where: {
-        id: req.params.id,
-        user_id: req.user.id
-      }
-    });
+    const task = await Task.findOneAndUpdate(
+      { _id: req.params.id, user: req.user._id },
+      req.body,
+      { new: true, runValidators: true }
+    );
 
-    if (updatedRows === 0) {
+    if (!task) {
       return res.status(404).json({ error: 'Task not found' });
     }
 
-    const updatedTask = await Task.findOne({
-      where: {
-        id: req.params.id,
-        user_id: req.user.id
-      }
-    });
-
-    res.json(updatedTask);
+    res.json(task);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -230,14 +112,12 @@ app.patch('/api/tasks/:id', auth, async (req, res) => {
 
 app.delete('/api/tasks/:id', auth, async (req, res) => {
   try {
-    const deletedRows = await Task.destroy({
-      where: {
-        id: req.params.id,
-        user_id: req.user.id
-      }
+    const task = await Task.findOneAndDelete({
+      _id: req.params.id,
+      user: req.user._id
     });
 
-    if (deletedRows === 0) {
+    if (!task) {
       return res.status(404).json({ error: 'Task not found' });
     }
 
@@ -247,23 +127,7 @@ app.delete('/api/tasks/:id', auth, async (req, res) => {
   }
 });
 
-// Initialize Database and Start Server
-const startServer = async () => {
-  try {
-    await sequelize.authenticate();
-    console.log('Database connected successfully');
-    
-    // Use existing tables instead of creating new ones
-    await sequelize.sync({ force: false });
-    console.log('Database synchronized');
-
-    app.listen(port, () => {
-      console.log(`Server is running on port ${port}`);
-    });
-  } catch (error) {
-    console.error('Error starting server:', error);
-    process.exit(1);
-  }
-};
-
-startServer(); 
+// Start Server
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+}); 

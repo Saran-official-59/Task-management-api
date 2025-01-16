@@ -273,15 +273,14 @@ This project is licensed under the MIT License.
 
 ## Deployment
 
-This API is deployed on Render. Live URL: [https://task-management-api.onrender.com](https://task-management-api.onrender.com)
+This API is deployed on Render using PlanetScale for the database.
 
-### Environment Variables Required for Deployment
-
-- `DB_HOST`: MySQL database host
-- `DB_USER`: Database username
-- `DB_PASSWORD`: Database password
-- `DB_NAME`: Database name
-- `JWT_SECRET`: Secret key for JWT
+### Environment Variables for Deployment
+- `DB_HOST`: PlanetScale database host
+- `DB_USER`: PlanetScale username
+- `DB_PASSWORD`: PlanetScale password
+- `DB_NAME`: PlanetScale database name
+- `JWT_SECRET`: JWT secret key
 - `PORT`: Port number (provided by Render)
 
 ### Deployment Steps
