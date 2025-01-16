@@ -28,12 +28,10 @@ app.post('/api/auth/register', async (req, res) => {
       password: req.body.password
     });
     await user.save();
-
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
-    const userData = user.toObject();
-    delete userData.password;
     
-    res.status(201).json({ user: userData, token });
+    res.status(201).json({ 
+      message: "Registration successful."
+    });
   } catch (error) {
     if (error.code === 11000) {
       return res.status(400).json({ error: 'Username already exists' });
@@ -52,10 +50,11 @@ app.post('/api/auth/login', async (req, res) => {
     }
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
-    const userData = user.toObject();
-    delete userData.password;
     
-    res.json({ user: userData, token });
+    res.json({ 
+      message: "Login successful.",
+      token 
+    });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

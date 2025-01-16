@@ -95,12 +95,7 @@ Content-Type: application/json
 **Response:**
 ```json
 {
-    "user": {
-        "id": 1,
-        "username": "example_user",
-        "created_at": "2024-02-20T..."
-    },
-    "token": "eyJhbGciOiJ..."
+    "message": "Registration successful."
 }
 ```
 
@@ -118,11 +113,7 @@ Content-Type: application/json
 **Response:**
 ```json
 {
-    "user": {
-        "id": 1,
-        "username": "example_user",
-        "created_at": "2024-02-20T..."
-    },
+    "message": "Login successful.",
     "token": "eyJhbGciOiJ..."
 }
 ```
