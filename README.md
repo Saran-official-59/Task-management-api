@@ -270,3 +270,36 @@ Authorization: Bearer <token>
 ## License
 
 This project is licensed under the MIT License.
+
+## Deployment
+
+This API is deployed on Render. Live URL: [https://task-management-api.onrender.com](https://task-management-api.onrender.com)
+
+### Environment Variables Required for Deployment
+
+- `DB_HOST`: MySQL database host
+- `DB_USER`: Database username
+- `DB_PASSWORD`: Database password
+- `DB_NAME`: Database name
+- `JWT_SECRET`: Secret key for JWT
+- `PORT`: Port number (provided by Render)
+
+### Deployment Steps
+
+1. Push code to GitHub
+2. Create new Web Service on Render
+3. Connect GitHub repository
+4. Configure environment variables
+5. Deploy
+
+### Testing Deployed API
+
+Base URL: `https://task-management-api.onrender.com`
+
+Test endpoints:
+- Register: POST `/api/auth/register`
+- Login: POST `/api/auth/login`
+- Create Task: POST `/api/tasks`
+- Get Tasks: GET `/api/tasks`
+- Update Task: PATCH `/api/tasks/:id`
+- Delete Task: DELETE `/api/tasks/:id`

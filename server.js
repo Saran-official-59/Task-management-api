@@ -14,12 +14,18 @@ app.use(express.json());
 
 // Database Configuration
 const sequelize = new Sequelize({
-  host: 'localhost',
-  username: 'root',
-  password: 'Saran@2004',
-  database: 'task_management',
+  host: process.env.DB_HOST,
+  username: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
   dialect: 'mysql',
-  logging: true
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false
+    }
+  },
+  logging: false
 });
 
 // Add this for debugging
