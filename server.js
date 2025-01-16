@@ -14,12 +14,20 @@ app.use(express.json());
 
 // Database Configuration
 const sequelize = new Sequelize({
-  host: process.env.DB_HOST || 'localhost',
-  username: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'task_management',
+  host: 'localhost',
+  username: 'root',
+  password: 'Saran@2004',
+  database: 'task_management',
   dialect: 'mysql',
-  logging: false
+  logging: true
+});
+
+// Add this for debugging
+console.log('Database Config:', {
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  database: process.env.DB_NAME,
+  // Don't log the password
 });
 
 // Define User Model
