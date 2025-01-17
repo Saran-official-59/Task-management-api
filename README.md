@@ -182,13 +182,9 @@ Content-Type: application/json
 **Response:**
 ```json
 {
-    "id": 1,
-    "title": "Complete Project",
-    "description": "Updated description",
+    "message": "Task updated successfully",
     "status": "completed",
-    "user_id": 1,
-    "created_at": "2024-02-20T...",
-    "updated_at": "2024-02-20T..."
+    "description": "Updated description"
 }
 ```
 
@@ -201,95 +197,10 @@ Authorization: Bearer <token>
 **Response:**
 ```json
 {
-    "message": "Task deleted successfully"
+    "message": "Task \"Complete Project\" deleted successfully"
 }
 ```
 
 ## Error Responses
 
-```json
-// Authentication Error
-{
-    "error": "Please authenticate"
-}
-
-// Invalid Credentials
-{
-    "error": "Invalid login credentials"
-}
-
-// Resource Not Found
-{
-    "error": "Task not found"
-}
-
-// Duplicate Entry
-{
-    "error": "Username already exists"
-}
 ```
-
-## Task Status Options
-
-- `pending` (default)
-- `in-progress`
-- `completed`
-
-## Testing with Postman
-
-1. Import the provided collection
-2. Set up environment variables:
-   ```javascript
-   // After login, in the "Tests" tab add:
-   if (pm.response.code === 200) {
-       pm.environment.set('token', pm.response.json().token);
-   }
-   ```
-3. Use `{{token}}` in your Authorization headers:
-   ```
-   Authorization: Bearer {{token}}
-   ```
-
-## Security Features
-
-- Password Hashing using bcrypt
-- JWT-based Authentication
-- SQL Injection Protection
-- CORS Enabled
-- Input Validation
-
-## License
-
-This project is licensed under the MIT License.
-
-## Deployment
-
-This API is deployed on Render using PlanetScale for the database.
-
-### Environment Variables for Deployment
-- `DB_HOST`: PlanetScale database host
-- `DB_USER`: PlanetScale username
-- `DB_PASSWORD`: PlanetScale password
-- `DB_NAME`: PlanetScale database name
-- `JWT_SECRET`: JWT secret key
-- `PORT`: Port number (provided by Render)
-
-### Deployment Steps
-
-1. Push code to GitHub
-2. Create new Web Service on Render
-3. Connect GitHub repository
-4. Configure environment variables
-5. Deploy
-
-### Testing Deployed API
-
-Base URL: `https://task-management-api.onrender.com`
-
-Test endpoints:
-- Register: POST `/api/auth/register`
-- Login: POST `/api/auth/login`
-- Create Task: POST `/api/tasks`
-- Get Tasks: GET `/api/tasks`
-- Update Task: PATCH `/api/tasks/:id`
-- Delete Task: DELETE `/api/tasks/:id`
