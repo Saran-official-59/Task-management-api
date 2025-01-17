@@ -207,7 +207,9 @@ Authorization: Bearer <token>
 
 ## Testing with Postman
 
-1. Import the provided collection
+1. Import the provided collection:
+   - Collection URL: [Task Management API Collection](https://github.com/Saran-official-59/Task-management-api/blob/main/Task%20management%20API.postman_collection.json)
+
 2. Set up environment variables:
    ```javascript
    // After login, in the "Tests" tab add:
@@ -215,10 +217,17 @@ Authorization: Bearer <token>
        pm.environment.set('token', pm.response.json().token);
    }
    ```
+
 3. Use `{{token}}` in your Authorization headers:
    ```
    Authorization: Bearer {{token}}
    ```
+
+4. The collection includes:
+   - Authentication endpoints (Register, Login)
+   - Task management endpoints (Create, Read, Update, Delete)
+   - Pre-configured headers and authentication
+   - Example request bodies
 
 ## Security Features
 
@@ -232,6 +241,17 @@ Authorization: Bearer <token>
 
 This API is deployed on Render with MongoDB Atlas.
 
+### Live API Endpoint
+Base URL: [https://task-management-api-mbah.onrender.com](https://task-management-api-mbah.onrender.com)
+
+Example endpoints:
+- Register: `POST /api/auth/register`
+- Login: `POST /api/auth/login`
+- Create Task: `POST /api/tasks`
+- Get Tasks: `GET /api/tasks`
+- Update Task: `PATCH /api/tasks/:id`
+- Delete Task: `DELETE /api/tasks/:id`
+
 ### Environment Variables for Deployment
 - `MONGODB_URI`: MongoDB Atlas connection string
 - `JWT_SECRET`: Secret key for JWT
@@ -244,3 +264,19 @@ This API is deployed on Render with MongoDB Atlas.
 3. Connect GitHub repository
 4. Configure environment variables
 5. Deploy
+
+### Testing the Deployed API
+
+You can test the deployed API using either:
+
+1. Postman Collection:
+   - Import the [Task Management API Collection](https://github.com/Saran-official-59/Task-management-api/blob/main/Task%20management%20API.postman_collection.json)
+   - Update the environment variable `BASE_URL` to `https://task-management-api-mbah.onrender.com`
+
+2. Direct API calls:
+   ```bash
+   # Register
+   curl -X POST https://task-management-api-mbah.onrender.com/api/auth/register \
+   -H "Content-Type: application/json" \
+   -d '{"username":"testuser","password":"123456"}'
+   ```
