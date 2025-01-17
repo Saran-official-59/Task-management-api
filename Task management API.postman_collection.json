@@ -1,0 +1,251 @@
+{
+	"info": {
+		"_postman_id": "ba737756-3dfe-403c-872c-5a8bd4f7a3d1",
+		"name": "Task management API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "41098732",
+		"_collection_link": "https://grey-firefly-900487.postman.co/workspace/New-Team-Workspace~0e353516-6dcc-4cc2-a7be-d6dbb41e01bc/collection/41098732-ba737756-3dfe-403c-872c-5a8bd4f7a3d1?action=share&source=collection_link&creator=41098732"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Register user",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"Saran\",\r\n    \"password\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://task-management-api-mbah.onrender.com/api/auth/register",
+							"protocol": "https",
+							"host": [
+								"task-management-api-mbah",
+								"onrender",
+								"com"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"test\",\r\n    \"password\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://task-management-api-mbah.onrender.com/api/auth/login",
+							"protocol": "https",
+							"host": [
+								"task-management-api-mbah",
+								"onrender",
+								"com"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tasks",
+			"item": [
+				{
+					"name": "Add task",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Nzg5MmZkOWUxNTIxZjk2ZTNjNDlhMzMiLCJpYXQiOjE3MzcwNDY5ODl9.tXiP2v_-1oGEPo3NbH1KlmxfZrtTF8l5xBNILBqNZ6g",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Complete Project\",\r\n    \"description\": \"Finish the task management API\",\r\n    \"status\": \"pending\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://task-management-api-mbah.onrender.com/api/tasks",
+							"protocol": "https",
+							"host": [
+								"task-management-api-mbah",
+								"onrender",
+								"com"
+							],
+							"path": [
+								"api",
+								"tasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all task",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Nzg5MmZkOWUxNTIxZjk2ZTNjNDlhMzMiLCJpYXQiOjE3MzcwNDY5ODl9.tXiP2v_-1oGEPo3NbH1KlmxfZrtTF8l5xBNILBqNZ6g",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://task-management-api-mbah.onrender.com/api/tasks",
+							"protocol": "https",
+							"host": [
+								"task-management-api-mbah",
+								"onrender",
+								"com"
+							],
+							"path": [
+								"api",
+								"tasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update task",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Nzg5MmZkOWUxNTIxZjk2ZTNjNDlhMzMiLCJpYXQiOjE3MzcwNDY5ODl9.tXiP2v_-1oGEPo3NbH1KlmxfZrtTF8l5xBNILBqNZ6g",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\r\n{\r\n    \"status\": \"completed\",\r\n    \"description\": \"Updated description\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://task-management-api-mbah.onrender.com/api/tasks/67893c17c02ecc0c0e1ab5f1",
+							"protocol": "https",
+							"host": [
+								"task-management-api-mbah",
+								"onrender",
+								"com"
+							],
+							"path": [
+								"api",
+								"tasks",
+								"67893c17c02ecc0c0e1ab5f1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete task",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Nzg5MmZkOWUxNTIxZjk2ZTNjNDlhMzMiLCJpYXQiOjE3MzcwNDY5ODl9.tXiP2v_-1oGEPo3NbH1KlmxfZrtTF8l5xBNILBqNZ6g",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://task-management-api-mbah.onrender.com/api/tasks/67893c17c02ecc0c0e1ab5f1",
+							"protocol": "https",
+							"host": [
+								"task-management-api-mbah",
+								"onrender",
+								"com"
+							],
+							"path": [
+								"api",
+								"tasks",
+								"67893c17c02ecc0c0e1ab5f1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
